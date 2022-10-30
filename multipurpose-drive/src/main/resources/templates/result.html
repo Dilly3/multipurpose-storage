@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+
+  <title>Result</title>
+</head>
+<body class="p-3 mb-2 bg-light text-black">
+<div class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
+  <div class="alert alert-success fill-parent" th:if="${message == 'save successful'}">
+    <h1 class="display-5" id="successSave">Success</h1>
+    <span>Your changes were successfully saved. Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+  </div>
+  <div class="alert alert-success fill-parent" th:if="${message == 'update successful'}">
+    <h1 class="display-5" id="successUpdate">Success</h1>
+    <span>Your changes were updated successfully . Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+  </div>
+  <div class="alert alert-success fill-parent" th:if="${message == 'delete successful'}">
+    <h1 class="display-5" id="successDelete">Success</h1>
+    <span>deleted successfully . Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+  </div>
+  <div class="alert alert-success fill-parent" th:if="${message == 'signup successful'}">
+    <h1 class="display-5" id="successSignup">Success</h1>
+    <span>Sign Up Successful Click <a th:href="@{/login}">here</a> to login.</span>
+  </div>
+  <div class="alert alert-danger fill-parent" th:if="${message == 'error'}" >
+    <h1 class="display-5">Error</h1>
+    <span>Your changes were not saved. Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+  </div>
+  <div class="alert alert-danger fill-parent" th:if="${message == 'error'}">
+    <h1 class="display-5">Error</h1>
+    <span>Example Error Message</span>
+    <span>Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+  </div>
+</div>
+</body>
+</html>
