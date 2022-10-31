@@ -12,11 +12,11 @@
 <div class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
   <div class="alert alert-success fill-parent" th:if="${message == 'save successful'}">
     <h1 class="display-5" id="successSave">Success</h1>
-    <span>Your changes were successfully saved. Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+    <span>Your changes were successfully saved. Click <a th:href="@{/dashboard}" id="successSave-Link">here</a> to continue.</span>
   </div>
   <div class="alert alert-success fill-parent" th:if="${message == 'update successful'}">
     <h1 class="display-5" id="successUpdate">Success</h1>
-    <span>Your changes were updated successfully . Click <a th:href="@{/dashboard}">here</a> to continue.</span>
+    <span >Your changes were updated successfully<a  id="updateLink" th:href="@{/dashboard}" > Click here</a> to continue.</span>
   </div>
   <div class="alert alert-success fill-parent" th:if="${message == 'delete successful'}">
     <h1 class="display-5" id="successDelete">Success</h1>
@@ -24,7 +24,11 @@
   </div>
   <div class="alert alert-success fill-parent" th:if="${message == 'signup successful'}">
     <h1 class="display-5" id="successSignup">Success</h1>
-    <span>Sign Up Successful Click <a th:href="@{/login}">here</a> to login.</span>
+    <span>Sign Up Successful Click <a th:href="@{/login}" id="loginLink">here</a> to login.</span>
+  </div>
+  <div class="alert alert-danger fill-parent" th:if="${message == 'user with username exist'}">
+    <h1 class="display-5" id="userExist">Error</h1>
+    <span>User with Username Exist <a th:href="@{/signup}" id="loginLinkUserExist">Click here</a> to Signup.</span>
   </div>
   <div class="alert alert-danger fill-parent" th:if="${message == 'error'}" >
     <h1 class="display-5">Error</h1>

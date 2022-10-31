@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
 
-    <title>Home</title>
+    <title>Dashboard</title>
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -85,14 +85,14 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" th:onclick="showNoteModal()">
+                <button style="margin: 0.25em;" id="add-new-note" type="button" class="btn btn-info float-right" th:onclick="showNoteModal()">
                     + Add a New Note
                 </button>
 
 
                 <div class="table-responsive">
 
-                    <table class="table table-striped" id="userTable">
+                    <table class="table table-striped noteTable" id="userTable">
                         <thead>
                         <tr>
                             <th style="width: 20%" scope="col"></th>
@@ -100,13 +100,12 @@
                             <th style="width: 60%" scope="col">Description</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
                         <th:block th:each="note : ${notes}">
                         <tr>
                             <td>
                                 <button
-                                        th:summary="${note.noteDescription}"
-                                        th:title="${note.noteTitle}"
+                                       name="btnEdit"
                                         th:href="@{'http://localhost:8030/note/getNote?Id=' + ${note.userId}}"
                                         type="button" th:onclick="javascript: showNoteModal([[${note.noteId}]],[[${note.noteTitle}]],[[${note.noteDescription}]])" class="btn btn-success edit"
                                         id="editButton" >
@@ -147,7 +146,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Update/Save</button>
+                                <button type="button" id="note-update-btn" class="btn btn-primary" onclick="$('#noteSubmit').click();">Update/Save</button>
                             </div>
                         </div>
                     </div>
