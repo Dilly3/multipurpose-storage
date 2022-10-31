@@ -3,9 +3,12 @@ package com.dilly3.multipurposedrive;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -17,6 +20,7 @@ class MultipurposeDriveApplicationTests {
 	private int port;
 
 	private WebDriver driver;
+	private WebDriverWait webDriverWait;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -26,6 +30,7 @@ class MultipurposeDriveApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		this.webDriverWait = new WebDriverWait(this.driver, 3000);
 	}
 
 	@AfterEach
@@ -36,11 +41,122 @@ class MultipurposeDriveApplicationTests {
 	}
 
 	@Test
+	@Order(1)
 	public void getLoginPage() {
-		driver.get("http://localhost:" + 8030 + "/login");
+		driver.get("http://localhost:" + port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
-//
+
+	@Test
+	@Order(2)
+	public void testSignUp() throws InterruptedException {
+// sign up
+		driver.get("http://localhost:" + port + "/signup");
+		driver.findElement(By.id("inputFirstName")).sendKeys("mike");
+		driver.findElement(By.id("inputLastName")).sendKeys("olisa");
+		driver.findElement(By.id("inputUsername")).sendKeys("isa1238");
+		driver.findElement(By.id("inputPassword")).sendKeys("0000");
+		Thread.sleep(2000);
+		driver.findElement(By.id("buttonSignUp")).click();
+		Thread.sleep(2000);
+		Assertions.assertTrue(driver.findElement(By.id("successSignup")).getText().contains("Success"));
+
+		//login
+		driver.findElement(By.id("loginLink")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("inputUsername")).sendKeys("isa1238");
+		driver.findElement(By.id("inputPassword")).sendKeys("0000");
+		driver.findElement(By.id("login-button")).click();
+		Thread.sleep(3000);
+
+		Assertions.assertEquals("Dashboard", driver.getTitle());
+	}
+
+	@Test
+	@Order(3)
+	public void unAuthorizedUser() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/dashboard");
+		Thread.sleep(2000);
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + port + "/result");
+		Thread.sleep(2000);
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + port + "/signup");
+		Thread.sleep(2000);
+		Assertions.assertEquals("Sign Up", driver.getTitle());
+	}
+
+	@Test
+	@Order(4)
+	public void testNote() throws InterruptedException {
+		// login
+		driver.get("http://localhost:" + port + "/login");
+		driver.findElement(By.id("inputUsername")).sendKeys("olisa123");
+		driver.findElement(By.id("inputPassword")).sendKeys("0000");
+		driver.findElement(By.id("login-button")).click();
+
+		// Switch to notes tab
+		driver.findElement(By.id("nav-notes-tab")).click();
+		Thread.sleep(2000);
+
+		// Create a new note
+		driver.findElement(By.id("add-new-note")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("note-title")).sendKeys("Best weekend ");
+		driver.findElement(By.id("note-description")).sendKeys("movies are fun to watch");
+		driver.findElement(By.id("note-update-btn")).click();
+		Thread.sleep(2000);
+		String text = driver.findElement(By.id("successSave")).getText();
+		Assertions.assertEquals("Success", text);
+		Thread.sleep(2000);
+		driver.findElement(By.id("successSave-Link")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("add-new-note")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("note-title")).sendKeys("Best Sports ");
+		driver.findElement(By.id("note-description")).sendKeys("Soccer is fun to watch");
+		driver.findElement(By.id("note-update-btn")).click();
+		Thread.sleep(2000);
+		String text2 = driver.findElement(By.id("successSave")).getText();
+		Assertions.assertEquals("Success", text2);
+		Thread.sleep(2000);
+// test edit
+		driver.findElement(By.id("successSave-Link")).click();
+		Thread.sleep(2000);
+
+
+	}
+
+	@Test
+	@Order(5)
+	public void testNoteEdit() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		driver.findElement(By.id("inputUsername")).sendKeys("olisa123");
+		driver.findElement(By.id("inputPassword")).sendKeys("0000");
+		driver.findElement(By.id("login-button")).click();
+
+		driver.findElement(By.id("nav-notes-tab")).click();
+		//Thread.sleep(2000);
+		Thread.sleep(2000);
+
+		WebElement editButton = driver.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button"));
+		webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button")));
+
+
+		System.out.println(editButton.getText());
+		editButton.click();
+
+			driver.findElement(By.id("note-title")).sendKeys("-2");
+			driver.findElement(By.id("note-description")).sendKeys("-2");
+			driver.findElement(By.id("noteSubmit")).click();
+			//	noteEdited = true;
+			Assertions.assertEquals("Dashboard", driver.getTitle());
+
+
+
+	}
+}
+
 //	/**
 //	 * PLEASE DO NOT DELETE THIS method.
 //	 * Helper method for Udacity-supplied sanity checks.
@@ -199,5 +315,5 @@ class MultipurposeDriveApplicationTests {
 
 
 
-}
+
 
