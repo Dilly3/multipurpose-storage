@@ -58,11 +58,11 @@ private NotesPage notesPage;
 	public void testSignUp() throws InterruptedException {
 // sign up
 		driver.get("http://localhost:" + port + "/signup");
-		signupPage.testSignUp();
+		signupPage.testSignUp("issa", "davis", "issa123", "0000");
 		Assertions.assertTrue(driver.findElement(By.id("successSignup")).getText().contains("Success"));
 		//login
 		loginPage.getLoginLink().click();
-		loginPage.testLogin();
+		loginPage.testLogin("issa123", "0000");
 
 		Assertions.assertEquals("Dashboard", driver.getTitle());
 	}
@@ -86,7 +86,7 @@ private NotesPage notesPage;
 	public void testNote() throws InterruptedException {
 		// login
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.Login();
+		loginPage.testLogin("issa123", "0000");
 
 		// Switch to notes tab
 		notesPage.getNotesTab().click();
@@ -96,8 +96,14 @@ private NotesPage notesPage;
 		String text = notesPage.testCreateNewNote("how to relax","movies are fun to watch");
 		Assertions.assertEquals("Success", text);
 		Thread.sleep(1000);
+		// navigate bck to dashboard
 		notesPage.getNoteSaveSuccessBackToHome().click();
-
+		//go to notetab
+		notesPage.getNotesTab().click();
+		Thread.sleep(1000);
+		String text2 = notesPage.testCreateNewNote("Viola davis","how to get away with murder");
+		Assertions.assertEquals("Success", text2);
+		Thread.sleep(1000);
 	}
 
 	@Test

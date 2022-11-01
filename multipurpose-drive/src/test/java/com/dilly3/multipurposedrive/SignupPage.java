@@ -63,11 +63,11 @@ public class SignupPage {
         this.signupButton = signupButton;
     }
 
-    public void testSignUp() throws InterruptedException {
-     firstname.sendKeys("mike");
-        lastname.sendKeys("olisa");
-        username.sendKeys("isa1238");
-        password.sendKeys("0000");
+    public void testSignUp(String fstname,String lstname,String usrname,String psswrd ) throws InterruptedException {
+     firstname.sendKeys(fstname);
+        lastname.sendKeys(lstname);
+        username.sendKeys(usrname);
+        password.sendKeys(psswrd);
         Thread.sleep(2000);
         signupButton.click();
     }

@@ -51,10 +51,10 @@ public class LoginPage {
     public void setLoginLink(WebElement loginLink) {
         this.loginLink = loginLink;
     }
-    public void testLogin() throws InterruptedException {
+    public void testLogin(String usrname, String pssword) throws InterruptedException {
         Thread.sleep(1000);
-        usernameInput.sendKeys("isa1238");
-        password.sendKeys("0000");
+        usernameInput.sendKeys(usrname);
+        password.sendKeys(pssword);
        loginButton.click();
         Thread.sleep(1000);
     }
