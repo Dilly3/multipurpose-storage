@@ -116,8 +116,8 @@ private NotesPage notesPage;
 		System.out.println(editButton.getText());
 		editButton.click();
 
-			notesPage.getNoteTitle().sendKeys("-2");
-			notesPage.getNoteDescription().sendKeys("-2");
+			notesPage.getNoteTitle().sendKeys("hope alive");
+			notesPage.getNoteDescription().sendKeys(" A living Faith ministration ");
 			notesPage.getUpdateNoteButton().click();
 			//	noteEdited = true;
 			Assertions.assertEquals("Dashboard", driver.getTitle());
