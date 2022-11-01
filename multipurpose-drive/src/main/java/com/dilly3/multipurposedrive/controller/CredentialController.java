@@ -1,9 +1,9 @@
 package com.dilly3.multipurposedrive.controller;
 
-import com.dilly3.multipurposedrive.mapper.UsersMapper;
 import com.dilly3.multipurposedrive.model.Credentials;
 import com.dilly3.multipurposedrive.security.AuthenticationService;
 import com.dilly3.multipurposedrive.services.CredentialService;
+import com.dilly3.multipurposedrive.services.IUserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +19,14 @@ public class CredentialController {
 
     private final AuthenticationService authenticationService;
     private final CredentialService credentialService;
-    private final UsersMapper usersMapper;
+    private final IUserService iUserService;
 
 
     public CredentialController(AuthenticationService authenticationService, CredentialService credentialService,
-                                UsersMapper usersMapper) {
+                                IUserService iUserService) {
         this.authenticationService = authenticationService;
         this.credentialService = credentialService;
-        this.usersMapper = usersMapper;
+        this.iUserService = iUserService;
     }
 
     private int credentialId ;
@@ -43,7 +43,7 @@ public class CredentialController {
         Credentials credentials = new Credentials();
         if (authenticationService.isUserLoggedIn()) {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            var user = usersMapper.getUser(username);
+            var user = iUserService.getUserByUsername(username);
           var message =  credentialService.saveCredential(credentialId,url,credUsername,password,user.getUserId());
                 model.addAttribute("message", message);
                 return "result";

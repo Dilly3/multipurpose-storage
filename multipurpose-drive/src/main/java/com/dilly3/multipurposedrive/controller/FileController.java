@@ -4,6 +4,7 @@ package com.dilly3.multipurposedrive.controller;
 import com.dilly3.multipurposedrive.mapper.UsersMapper;
 import com.dilly3.multipurposedrive.security.AuthenticationService;
 import com.dilly3.multipurposedrive.services.FilesService;
+import com.dilly3.multipurposedrive.services.IUserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,15 +25,15 @@ public class FileController {
 
     private final AuthenticationService authenticationService;
     private final FilesService filesService;
-    private final UsersMapper usersMapper;
+    private final IUserService iUserService;
 
 
     public FileController(AuthenticationService authenticationService,
                           FilesService filesService,
-                          UsersMapper usersMapper) {
+                          IUserService iUserService) {
         this.authenticationService = authenticationService;
         this.filesService = filesService;
-        this.usersMapper = usersMapper;
+        this.iUserService = iUserService;
     }
 
     @PostMapping("/fileUpload")
@@ -40,7 +41,7 @@ public class FileController {
         if (authenticationService.isUserLoggedIn() && !multipartFile.isEmpty())
             {
                 String username = SecurityContextHolder.getContext().getAuthentication().getName();
-                var user = usersMapper.getUser(username);
+                var user = iUserService.getUserByUsername(username);
            var message = filesService.uploadFile(multipartFile,user.getUserId());
                 ra.addFlashAttribute("message", message);
                 return "result";
@@ -64,7 +65,7 @@ public class FileController {
     {
         if (authenticationService.isUserLoggedIn()) {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            var user = usersMapper.getUser(username);
+            var user = iUserService.getUserByUsername(username);
             var message = filesService.downloadFile(response, fileId, username);
         }
     }

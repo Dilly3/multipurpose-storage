@@ -3,15 +3,12 @@ package com.dilly3.multipurposedrive.controller;
 
 import com.dilly3.multipurposedrive.dto.LoginDto;
 import com.dilly3.multipurposedrive.mapper.CredentialsMapper;
-import com.dilly3.multipurposedrive.mapper.FilesMapper;
-import com.dilly3.multipurposedrive.mapper.NotesMapper;
 import com.dilly3.multipurposedrive.mapper.UsersMapper;
 import com.dilly3.multipurposedrive.model.Files;
 import com.dilly3.multipurposedrive.model.IUser;
 import com.dilly3.multipurposedrive.model.Notes;
 import com.dilly3.multipurposedrive.security.AuthenticationService;
-import com.dilly3.multipurposedrive.services.CredentialService;
-import com.dilly3.multipurposedrive.services.HashService;
+import com.dilly3.multipurposedrive.services.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,23 +29,24 @@ import java.util.List;
 public class HomeController {
 
     private final AuthenticationService authenticationService;
-    private final UsersMapper usersMapper;
+    private final IUserService iUserService;
     private final HashService hashService;
-    private final FilesMapper filesMapper;
-    private final NotesMapper notesMapper;
+    private final FilesService filesService ;
+    private final NotesService notesService;
     private final CredentialService credentialService;
 
     @Autowired public HomeController(AuthenticationService authenticationService, UsersMapper usersMapper,
-                                     HashService hashService, FilesMapper filesMapper,
-                                     NotesMapper notesMapper,
+                                     HashService hashService, FilesService filesService,
+                                     NotesService notesService,
+                                     IUserService iUserService,
                                      CredentialsMapper credentialsMapper, Logger LOGGER,
                                      CredentialService credentialService) {
         this.authenticationService = authenticationService;
-        this.usersMapper = usersMapper;
         this.hashService = hashService;
-        this.filesMapper = filesMapper;
-        this.notesMapper = notesMapper;
+        this.filesService = filesService;
+        this.notesService = notesService;
         this.credentialService = credentialService;
+        this.iUserService = iUserService;
     }
 
     @GetMapping(value = {"/home","/"})
@@ -85,11 +83,11 @@ public String LoginErrorPage(Model model, LoginDto login) {
        IUser iuser = null;
         if(authenticationService.isUserLoggedIn()){
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            iuser = usersMapper.getUser(username);
+            iuser = iUserService.getUserByUsername(username);
         }
         assert iuser != null;
-        List<Files> files = filesMapper.getFilesByuserId(iuser.getUserId());
-        List<Notes> notes = notesMapper.getNotesByUserId(iuser.getUserId());
+        List<Files> files = filesService.getFilesByUserId(iuser.getUserId());
+        List<Notes> notes = notesService.getNotesByUserId(iuser.getUserId());
 
         var unpackedCred = credentialService.unpackCredentials(iuser.getUserId());
         model.addAttribute("files", files);
@@ -105,9 +103,14 @@ public String LoginErrorPage(Model model, LoginDto login) {
                                  @RequestParam String firstname,
                                  @RequestParam String lastname ,
                                  @RequestParam String password ) {
+
+        if (iUserService.usernameExist(username)){
+            model.addAttribute("message" , "user with username exist");
+          return "result";
+        };
         var encodedSalt = hashService.getEncodedSalt();
         var hashedPassword = hashService.getHashedValue(password,encodedSalt);
-        usersMapper.save(new IUser(username,firstname,lastname,hashedPassword,encodedSalt));
+       Long id = iUserService.saveUser(new IUser(username,firstname,lastname,hashedPassword,encodedSalt));
 
 model.addAttribute("message", "signup successful");
 model.addAttribute("Users",user);

@@ -3,6 +3,7 @@ package com.dilly3.multipurposedrive.controller;
 import com.dilly3.multipurposedrive.mapper.UsersMapper;
 import com.dilly3.multipurposedrive.model.Notes;
 import com.dilly3.multipurposedrive.security.AuthenticationService;
+import com.dilly3.multipurposedrive.services.IUserService;
 import com.dilly3.multipurposedrive.services.NotesService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,15 @@ import java.io.IOException;
 @RequestMapping("/note")
 public class NotesController {
     private final AuthenticationService authenticationService;
-    private final UsersMapper usersMapper;
+    private final IUserService iUserService;
     private final NotesService notesService;
 
     @Autowired
     public NotesController(AuthenticationService authenticationService,
                            NotesService notesService,
-                           UsersMapper usersMapper, Logger LOGGER) {
+                           IUserService iUserService, Logger LOGGER) {
         this.authenticationService = authenticationService;
-        this.usersMapper = usersMapper;
+        this.iUserService = iUserService;
         this.notesService = notesService;
     }
 
@@ -39,7 +40,7 @@ public class NotesController {
         Notes note = new Notes();
         if (authenticationService.isUserLoggedIn()) {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            var user = usersMapper.getUser(username);
+            var user = iUserService.getUserByUsername(username);
 
       var message =  notesService.saveNote(noteId,noteDescription,noteTitle,user.getUserId());
             model.addAttribute("message", message);
