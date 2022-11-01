@@ -18,7 +18,9 @@ class MultipurposeDriveApplicationTests {
 
 	@LocalServerPort
 	private int port;
-
+private LoginPage loginPage;
+private SignupPage signupPage;
+private NotesPage notesPage;
 	private WebDriver driver;
 	private WebDriverWait webDriverWait;
 
@@ -30,7 +32,11 @@ class MultipurposeDriveApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		loginPage = new LoginPage(this.driver);
+		signupPage = new SignupPage(this.driver);
+		notesPage = new NotesPage(this.driver);
 		this.webDriverWait = new WebDriverWait(this.driver, 3000);
+
 	}
 
 	@AfterEach
@@ -52,22 +58,11 @@ class MultipurposeDriveApplicationTests {
 	public void testSignUp() throws InterruptedException {
 // sign up
 		driver.get("http://localhost:" + port + "/signup");
-		driver.findElement(By.id("inputFirstName")).sendKeys("mike");
-		driver.findElement(By.id("inputLastName")).sendKeys("olisa");
-		driver.findElement(By.id("inputUsername")).sendKeys("isa1238");
-		driver.findElement(By.id("inputPassword")).sendKeys("0000");
-		Thread.sleep(2000);
-		driver.findElement(By.id("buttonSignUp")).click();
-		Thread.sleep(2000);
+		signupPage.testSignUp();
 		Assertions.assertTrue(driver.findElement(By.id("successSignup")).getText().contains("Success"));
-
 		//login
-		driver.findElement(By.id("loginLink")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.id("inputUsername")).sendKeys("isa1238");
-		driver.findElement(By.id("inputPassword")).sendKeys("0000");
-		driver.findElement(By.id("login-button")).click();
-		Thread.sleep(3000);
+		loginPage.getLoginLink().click();
+		loginPage.testLogin();
 
 		Assertions.assertEquals("Dashboard", driver.getTitle());
 	}
@@ -91,39 +86,17 @@ class MultipurposeDriveApplicationTests {
 	public void testNote() throws InterruptedException {
 		// login
 		driver.get("http://localhost:" + port + "/login");
-		driver.findElement(By.id("inputUsername")).sendKeys("olisa123");
-		driver.findElement(By.id("inputPassword")).sendKeys("0000");
-		driver.findElement(By.id("login-button")).click();
+		loginPage.Login();
 
 		// Switch to notes tab
-		driver.findElement(By.id("nav-notes-tab")).click();
-		Thread.sleep(2000);
+		notesPage.getNotesTab().click();
+		Thread.sleep(1000);
 
 		// Create a new note
-		driver.findElement(By.id("add-new-note")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.id("note-title")).sendKeys("Best weekend ");
-		driver.findElement(By.id("note-description")).sendKeys("movies are fun to watch");
-		driver.findElement(By.id("note-update-btn")).click();
-		Thread.sleep(2000);
-		String text = driver.findElement(By.id("successSave")).getText();
+		String text = notesPage.testCreateNewNote("how to relax","movies are fun to watch");
 		Assertions.assertEquals("Success", text);
-		Thread.sleep(2000);
-		driver.findElement(By.id("successSave-Link")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.id("add-new-note")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.id("note-title")).sendKeys("Best Sports ");
-		driver.findElement(By.id("note-description")).sendKeys("Soccer is fun to watch");
-		driver.findElement(By.id("note-update-btn")).click();
-		Thread.sleep(2000);
-		String text2 = driver.findElement(By.id("successSave")).getText();
-		Assertions.assertEquals("Success", text2);
-		Thread.sleep(2000);
-// test edit
-		driver.findElement(By.id("successSave-Link")).click();
-		Thread.sleep(2000);
-
+		Thread.sleep(1000);
+		notesPage.getNoteSaveSuccessBackToHome().click();
 
 	}
 
@@ -131,13 +104,10 @@ class MultipurposeDriveApplicationTests {
 	@Order(5)
 	public void testNoteEdit() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
-		driver.findElement(By.id("inputUsername")).sendKeys("olisa123");
-		driver.findElement(By.id("inputPassword")).sendKeys("0000");
-		driver.findElement(By.id("login-button")).click();
-
-		driver.findElement(By.id("nav-notes-tab")).click();
-		//Thread.sleep(2000);
-		Thread.sleep(2000);
+		loginPage.Login();
+		//navigate to notesTab
+		notesPage.getNotesTab().click();
+		Thread.sleep(1000);
 
 		WebElement editButton = driver.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button"));
 		webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button")));
@@ -146,9 +116,9 @@ class MultipurposeDriveApplicationTests {
 		System.out.println(editButton.getText());
 		editButton.click();
 
-			driver.findElement(By.id("note-title")).sendKeys("-2");
-			driver.findElement(By.id("note-description")).sendKeys("-2");
-			driver.findElement(By.id("noteSubmit")).click();
+			notesPage.getNoteTitle().sendKeys("-2");
+			notesPage.getNoteDescription().sendKeys("-2");
+			notesPage.getUpdateNoteButton().click();
 			//	noteEdited = true;
 			Assertions.assertEquals("Dashboard", driver.getTitle());
 
