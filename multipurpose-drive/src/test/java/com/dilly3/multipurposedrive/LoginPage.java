@@ -4,8 +4,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LoginPage {
+    private final WebDriverWait wait;
     @FindBy(id="inputUsername")
     private WebElement usernameInput;
 
@@ -18,6 +21,7 @@ public class LoginPage {
  private WebElement loginLink;
     public LoginPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
+        wait = new WebDriverWait(driver,3);
     }
 
     public WebElement getUsernameInput() {
@@ -51,19 +55,18 @@ public class LoginPage {
     public void setLoginLink(WebElement loginLink) {
         this.loginLink = loginLink;
     }
-    public void testLogin(String usrname, String pssword) throws InterruptedException {
-        Thread.sleep(1000);
-        usernameInput.sendKeys(usrname);
-        password.sendKeys(pssword);
-       loginButton.click();
-        Thread.sleep(1000);
+    public void testLogin(String usrname, String psswrd) throws InterruptedException {
+        wait.until(ExpectedConditions.elementToBeClickable(usernameInput)).sendKeys(usrname);
+        wait.until(ExpectedConditions.elementToBeClickable(password)).sendKeys(psswrd);
+
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
     }
 
-    public void Login() throws InterruptedException {
-        Thread.sleep(1000);
-        usernameInput.sendKeys("olisa123");
-        password.sendKeys("0000");
-        loginButton.click();
-        Thread.sleep(1000);
+    public void Login(String usrname, String psswrd) throws InterruptedException {
+        wait.until(ExpectedConditions.elementToBeClickable(usernameInput)).sendKeys(usrname);
+        wait.until(ExpectedConditions.elementToBeClickable(password)).sendKeys(psswrd);
+
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+
     }
 }

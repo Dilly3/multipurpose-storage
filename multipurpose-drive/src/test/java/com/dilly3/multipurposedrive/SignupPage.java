@@ -5,8 +5,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SignupPage {
+    private final WebDriverWait wait;
     @FindBy(id = "inputFirstName")
     private WebElement firstname;
     @FindBy(id = "inputLastName")
@@ -21,6 +24,7 @@ public class SignupPage {
 
     public SignupPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
+        wait = new WebDriverWait(driver,4);
     }
 
     public WebElement getFirstname() {
@@ -64,11 +68,12 @@ public class SignupPage {
     }
 
     public void testSignUp(String fstname,String lstname,String usrname,String psswrd ) throws InterruptedException {
-     firstname.sendKeys(fstname);
-        lastname.sendKeys(lstname);
-        username.sendKeys(usrname);
-        password.sendKeys(psswrd);
-        Thread.sleep(2000);
-        signupButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(firstname)).sendKeys(fstname);
+        wait.until(ExpectedConditions.elementToBeClickable(lastname)).sendKeys(lstname);
+        wait.until(ExpectedConditions.elementToBeClickable(username)).sendKeys(usrname);
+        wait.until(ExpectedConditions.elementToBeClickable(password)).sendKeys(psswrd);
+
+        wait.until(ExpectedConditions.elementToBeClickable(signupButton)).click();
+
     }
 }

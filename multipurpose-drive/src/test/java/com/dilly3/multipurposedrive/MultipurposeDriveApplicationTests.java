@@ -21,6 +21,7 @@ class MultipurposeDriveApplicationTests {
 private LoginPage loginPage;
 private SignupPage signupPage;
 private NotesPage notesPage;
+private WebDriverWait wait;
 	private WebDriver driver;
 	private WebDriverWait webDriverWait;
 
@@ -35,7 +36,8 @@ private NotesPage notesPage;
 		loginPage = new LoginPage(this.driver);
 		signupPage = new SignupPage(this.driver);
 		notesPage = new NotesPage(this.driver);
-		this.webDriverWait = new WebDriverWait(this.driver, 3000);
+		this.webDriverWait = new WebDriverWait(this.driver, 2);
+		wait = new WebDriverWait(driver, 3);
 
 	}
 
@@ -58,12 +60,11 @@ private NotesPage notesPage;
 	public void testSignUp() throws InterruptedException {
 // sign up
 		driver.get("http://localhost:" + port + "/signup");
-		signupPage.testSignUp("issa", "davis", "issa123", "0000");
-		Assertions.assertTrue(driver.findElement(By.id("successSignup")).getText().contains("Success"));
+		signupPage.testSignUp("issa", "davis", "issa1234", "0000");
+		Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("successSignup"))).getText().contains("Success"));
 		//login
 		loginPage.getLoginLink().click();
 		loginPage.testLogin("issa123", "0000");
-
 		Assertions.assertEquals("Dashboard", driver.getTitle());
 	}
 
@@ -71,13 +72,10 @@ private NotesPage notesPage;
 	@Order(3)
 	public void unAuthorizedUser() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/dashboard");
-		Thread.sleep(2000);
 		Assertions.assertEquals("Login", driver.getTitle());
 		driver.get("http://localhost:" + port + "/result");
-		Thread.sleep(2000);
 		Assertions.assertEquals("Login", driver.getTitle());
 		driver.get("http://localhost:" + port + "/signup");
-		Thread.sleep(2000);
 		Assertions.assertEquals("Sign Up", driver.getTitle());
 	}
 
@@ -90,30 +88,25 @@ private NotesPage notesPage;
 
 		// Switch to notes tab
 		notesPage.getNotesTab().click();
-		Thread.sleep(1000);
 
 		// Create a new note
 		String text = notesPage.testCreateNewNote("how to relax","movies are fun to watch");
 		Assertions.assertEquals("Success", text);
-		Thread.sleep(1000);
 		// navigate bck to dashboard
 		notesPage.getNoteSaveSuccessBackToHome().click();
 		//go to notetab
 		notesPage.getNotesTab().click();
-		Thread.sleep(1000);
 		String text2 = notesPage.testCreateNewNote("Viola davis","how to get away with murder");
 		Assertions.assertEquals("Success", text2);
-		Thread.sleep(1000);
 	}
 
 	@Test
 	@Order(5)
 	public void testNoteEdit() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.Login();
+		loginPage.testLogin("issa123", "0000");
 		//navigate to notesTab
 		notesPage.getNotesTab().click();
-		Thread.sleep(1000);
 
 		WebElement editButton = driver.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button"));
 		webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button")));
