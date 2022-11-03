@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.List;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MultipurposeDriveApplicationTests {
@@ -32,18 +34,18 @@ private WebDriverWait wait;
 
 	@BeforeEach
 	public void beforeEach() {
-		this.driver = new ChromeDriver();
+		driver = new ChromeDriver();
 		loginPage = new LoginPage(this.driver);
 		signupPage = new SignupPage(this.driver);
 		notesPage = new NotesPage(this.driver);
-		this.webDriverWait = new WebDriverWait(this.driver, 2);
-		wait = new WebDriverWait(driver, 3);
+
+		wait = new WebDriverWait(driver, 4);
 
 	}
 
 	@AfterEach
 	public void afterEach() {
-		if (this.driver != null) {
+		if (driver != null) {
 			driver.quit();
 		}
 	}
@@ -70,7 +72,7 @@ private WebDriverWait wait;
 
 	@Test
 	@Order(3)
-	public void unAuthorizedUser() throws InterruptedException {
+	public void unAuthorizedUser()  {
 		driver.get("http://localhost:" + port + "/dashboard");
 		Assertions.assertEquals("Login", driver.getTitle());
 		driver.get("http://localhost:" + port + "/result");
@@ -87,15 +89,13 @@ private WebDriverWait wait;
 		loginPage.testLogin("issa123", "0000");
 
 		// Switch to notes tab
-		notesPage.getNotesTab().click();
-
+		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
 		// Create a new note
 		String text = notesPage.testCreateNewNote("how to relax","movies are fun to watch");
 		Assertions.assertEquals("Success", text);
 		// navigate bck to dashboard
 		notesPage.getNoteSaveSuccessBackToHome().click();
 		//go to notetab
-		notesPage.getNotesTab().click();
 		String text2 = notesPage.testCreateNewNote("Viola davis","how to get away with murder");
 		Assertions.assertEquals("Success", text2);
 	}
@@ -105,24 +105,20 @@ private WebDriverWait wait;
 	public void testNoteEdit() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
 		loginPage.testLogin("issa123", "0000");
-		//navigate to notesTab
-		notesPage.getNotesTab().click();
-
-		WebElement editButton = driver.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button"));
-		webDriverWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/div[2]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/button")));
+		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
+		var result = notesPage.testEditNote("holiday idea", "going for fishing", 1);
 
 
-		System.out.println(editButton.getText());
-		editButton.click();
+	}
 
-			notesPage.getNoteTitle().sendKeys("hope alive");
-			notesPage.getNoteDescription().sendKeys(" A living Faith ministration ");
-			notesPage.getUpdateNoteButton().click();
-			//	noteEdited = true;
-			Assertions.assertEquals("Dashboard", driver.getTitle());
-
-
-
+	@Test
+	@Order(6)
+	public void testNoteDelete() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("issa123", "0000");
+		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
+		var result = notesPage.testDeleteNote(1);
+		Assertions.assertEquals(result.get(0)-1,result.get(1));
 	}
 }
 
