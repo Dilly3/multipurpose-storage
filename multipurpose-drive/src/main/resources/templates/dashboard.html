@@ -103,6 +103,7 @@
                         <tbody id="tableBody">
                         <tr th:each="note : ${notes}">
                             <td class="tdOne">
+
                                 <button
                                        name="btnEdit"
                                         th:href="@{'http://localhost:8030/note/getNote?Id=' + ${note.userId}}"
@@ -110,7 +111,11 @@
                                         id="editButton" >
                                     Edit
                                 </button>
-                                <a id="deleteBtn" th:href="@{'http://localhost:8030/note/delete?Id=' + ${note.noteId}}"  class="btn btn-danger">Delete</a>
+                                <form class="delete-form" th:action="@{'/note/delete?Id=' + ${note.noteId}}" method="post">
+                                    <input type="hidden" name="noteId" th:value="${note.noteId}" />
+                                    <input id="deleteNoteButton" type="submit" value="Delete" class="btn btn-danger" />
+                                </form>
+
                             </td>
                             <th th:text="${note.noteTitle}" scope="row">Example Note Title</th>
                             <td id="tdTwo" th:text="${note.noteDescription}">Example Note Description </td>

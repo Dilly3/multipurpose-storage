@@ -3,6 +3,7 @@ package com.dilly3.multipurposedrive;
 import com.fasterxml.jackson.databind.util.ArrayBuilders;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,19 +24,20 @@ public class NotesPage {
 
     @FindBy(id = "add-new-note")
     private WebElement addNewNoteButton;
-
+    @FindBy(css = "#deleteNoteButton")
+    private WebElement deleteNote;
     @FindBy(id = "note-description")
     private WebElement noteDescription;
-    @FindBy(id = "tableBody")
+    @FindBy(css = "#tableBody")
     private WebElement tableBody;
     @FindBy(id = "note-update-btn")
     private WebElement updateNoteButton;
     @FindBy(id = "successSave-Link")
     private WebElement noteSaveSuccessBackToHome;
 
-    @FindBy(id = "deleteLink")
+    @FindBy(css = "#deleteLink")
     private WebElement noteDeleteSuccessBackToHome;
-
+    private final JavascriptExecutor javascriptExecutor;
     @FindBy(id = "updateLink")
     private WebElement noteUpdateSuccessBackToHome;
 
@@ -45,6 +47,7 @@ public class NotesPage {
     public NotesPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         wait = new WebDriverWait(driver,3);
+        javascriptExecutor = (JavascriptExecutor) driver;
     }
 
     public WebElement getNoteSaveSuccessBackToHome() {
@@ -149,32 +152,19 @@ public class NotesPage {
 
     }
 
-    public List<Integer> testDeleteNote(int num) throws InterruptedException {
-        Thread.sleep(1000);
-       // wait.until(ExpectedConditions.elementToBeClickable(notesTab)).click();
+    public void testDeleteNote(int num) throws InterruptedException {
+      var Tr =   tableBody.findElements(By.tagName("tr")).get(num);
+        var trx = tableBody.findElements(By.tagName("tr")).size();
+        var td = Tr.findElement(By.className("tdOne"));
+        var form = td.findElement(By.tagName("form"));
+        var input = form.findElement(By.id("deleteNoteButton"));
+        wait.until(ExpectedConditions.elementToBeClickable(input)).click();
+      //  Thread.sleep(1000);
+        wait.until(ExpectedConditions.elementToBeClickable(noteDeleteSuccessBackToHome)).click();
+      //  Thread.sleep(1000);
 
-        var tablebody = wait.until(ExpectedConditions.visibilityOf(tableBody));
-          var trx =  tablebody.findElements(By.tagName("tr"));
-       var tr1 =  trx.get(num);
+       var len =  tableBody.findElements(By.tagName("tr")).size();
+       Assertions.assertEquals(trx-1,len);
 
-        var th = tr1.findElement(By.tagName("th"));
-        var td = tr1.findElement(By.className("tdOne"));
-        var  len = trx.size();
-
-
-       var delButton = td.findElement(By.tagName("a"));
-       Thread.sleep(2000);
-       delButton.click();
-//
-//        wait.until(ExpectedConditions.elementToBeClickable(noteDeleteSuccessBackToHome)).click();
-     //   wait.until(ExpectedConditions.elementToBeClickable(notesTab)).click();
-        trx = tableBody.findElements(By.tagName("tr"));
-        tr1 =  trx.get(num);
-        var  len2 = trx.size();
-
-       var result = new ArrayList<Integer>();
-       result.add(len);
-        result.add(len2);
-       return result;
     }
 }

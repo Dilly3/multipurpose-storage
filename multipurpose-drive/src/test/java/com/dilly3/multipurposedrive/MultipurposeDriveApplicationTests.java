@@ -35,9 +35,9 @@ private WebDriverWait wait;
 	@BeforeEach
 	public void beforeEach() {
 		driver = new ChromeDriver();
-		loginPage = new LoginPage(this.driver);
-		signupPage = new SignupPage(this.driver);
-		notesPage = new NotesPage(this.driver);
+		loginPage = new LoginPage(driver);
+		signupPage = new SignupPage(driver);
+		notesPage = new NotesPage(driver);
 
 		wait = new WebDriverWait(driver, 4);
 
@@ -114,11 +114,12 @@ private WebDriverWait wait;
 	@Test
 	@Order(6)
 	public void testNoteDelete() throws InterruptedException {
+		testNote();
 		driver.get("http://localhost:" + port + "/login");
 		loginPage.testLogin("issa123", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
-		var result = notesPage.testDeleteNote(1);
-		Assertions.assertEquals(result.get(0)-1,result.get(1));
+		notesPage.testDeleteNote(0);
+
 	}
 }
 
