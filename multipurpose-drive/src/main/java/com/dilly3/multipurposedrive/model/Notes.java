@@ -6,10 +6,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
-@Entity public class Notes {
+@Entity public class Notes implements Comparable<Notes> {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int noteId;
+   private Integer noteId;
     private String noteTitle;
     private String noteDescription;
     private int userId;
@@ -23,11 +23,11 @@ import javax.persistence.Id;
         this.userId = userId;
     }
 
-    public int getNoteId() {
+    public Integer getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(Integer noteId) {
         this.noteId = noteId;
     }
 
@@ -58,5 +58,10 @@ import javax.persistence.Id;
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public int compareTo(Notes o) {
+        return noteId.compareTo(o.noteId);
     }
 }

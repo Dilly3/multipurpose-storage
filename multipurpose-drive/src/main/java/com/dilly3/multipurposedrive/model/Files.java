@@ -5,10 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity public class Files {
+@Entity public class Files implements Comparable<Files> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int fileId;
+    private Integer fileId;
     private String filename;
     private String contentType;
     private int fileSize;
@@ -72,5 +72,10 @@ import javax.persistence.Id;
 
     public void setFileData(byte[] fileData) {
         this.fileData = fileData;
+    }
+
+    @Override
+    public int compareTo(Files o) {
+        return fileId.compareTo(o.fileId);
     }
 }

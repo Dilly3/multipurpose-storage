@@ -3,10 +3,10 @@ package com.dilly3.multipurposedrive.model;
 import javax.persistence.*;
 
 
-@Entity public class Credentials {
+@Entity public class Credentials implements Comparable<Credentials> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int credentialId ;
+    private Integer credentialId ;
     private String url;
     private String username;
     private String credKey;
@@ -70,5 +70,10 @@ import javax.persistence.*;
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public int compareTo(Credentials o) {
+        return credentialId.compareTo(o.credentialId);
     }
 }
