@@ -52,8 +52,8 @@ public class NotesController {
     @GetMapping("/delete")
     public String deletenote(@RequestParam("Id") int Id, Model model,RedirectAttributes ra) {
      var message =   notesService.deleteNote(Id);
-        ra.addFlashAttribute("message", message);
-        return "redirect:/dashboard";
+        model.addAttribute("message", message);
+        return "result";
     }
 
 }
