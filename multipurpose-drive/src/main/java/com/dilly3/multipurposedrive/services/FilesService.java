@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_ERROR;
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
@@ -97,7 +98,7 @@ import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
     }
 
    public List<Files> getFilesByUserId(int userId){
-        return filesMapper.getFilesByuserId(userId);
+        return filesMapper.getFilesByuserId(userId).stream().sorted().collect(Collectors.toList());
     }
 
     public int saveFile(Files file){

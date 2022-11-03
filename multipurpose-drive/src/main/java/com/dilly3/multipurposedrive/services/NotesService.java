@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_ERROR;
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
@@ -71,7 +72,7 @@ message = e.getMessage();
     }
 
     public List<Notes> getNotesByUserId(int userId){
-        return notesMapper.getNotesByUserId(userId);
+        return notesMapper.getNotesByUserId(userId).stream().sorted().collect(Collectors.toList());
     }
 
     public int saveNote(Notes note){

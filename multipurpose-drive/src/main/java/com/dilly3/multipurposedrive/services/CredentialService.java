@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_ERROR;
 import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
@@ -85,7 +86,7 @@ public class CredentialService {
     }
 
     public List<CredentialsDto> unpackCredentials(int userId){
-        List<Credentials> credentials = credentialsMapper.getCredentialsByUserId(userId);
+        List<Credentials> credentials = credentialsMapper.getCredentialsByUserId(userId).stream().sorted().collect(Collectors.toList());
         List<CredentialsDto> unpackedCred = new ArrayList<>();
         for (Credentials cred : credentials ){
             CredentialsDto newCredentialsDto = new CredentialsDto();
