@@ -25,7 +25,8 @@ public class MultipurposeDriveApplication {
 	CommandLineRunner runner() {
 
 		return args -> {
-iUserService.deleteUserByUsername("issa1234");
+//			iUserService.deleteUserByUsername("aniks23");
+
 
 		};
 	}

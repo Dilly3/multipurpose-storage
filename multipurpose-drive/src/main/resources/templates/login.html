@@ -11,6 +11,10 @@
 <body class="p-3 mb-2 bg-light text-black">
 <div class="container justify-content-center w-25 p-3" style="background-color: #eeeeee; margin-top: 5em;">
   <h1 class="display-5">Login</h1>
+
+  <div class="alert alert-success fill-parent" th:if="${message == 'signup successful'}">
+    <span id="signup-success">Sign Up Successful, Login</span>
+  </div>
   <form th:action="@{/login}" method="POST" th:object="${Login}">
     <div class="alert alert-danger" th:if="${message == 'error'}" >
       Invalid username or password

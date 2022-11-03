@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -23,6 +24,8 @@ class MultipurposeDriveApplicationTests {
 private LoginPage loginPage;
 private SignupPage signupPage;
 private NotesPage notesPage;
+private FilePage filePage;
+private CredentialsPage credentialsPage;
 private WebDriverWait wait;
 	private WebDriver driver;
 	private WebDriverWait webDriverWait;
@@ -38,6 +41,8 @@ private WebDriverWait wait;
 		loginPage = new LoginPage(driver);
 		signupPage = new SignupPage(driver);
 		notesPage = new NotesPage(driver);
+		credentialsPage = new CredentialsPage(driver);
+		filePage = new FilePage(driver);
 
 		wait = new WebDriverWait(driver, 4);
 
@@ -56,22 +61,43 @@ private WebDriverWait wait;
 		driver.get("http://localhost:" + port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
+	public void testSignUp1(String firstname, String lastname, String username, String password) throws InterruptedException {
+// sign up
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp(firstname, lastname, username, password);
+		//Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("signup-success"))).getText().contains("Successful"));
+		//login
+//		loginPage.testLogin("issa123", "0000");
+//		Assertions.assertEquals("Dashboard", driver.getTitle());
+	}
 
 	@Test
 	@Order(2)
-	public void testSignUp() throws InterruptedException {
+	public void testSignUpAndRedirection() throws InterruptedException {
 // sign up
 		driver.get("http://localhost:" + port + "/signup");
-		signupPage.testSignUp("issa", "davis", "issa1234", "0000");
-		Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("successSignup"))).getText().contains("Success"));
+		signupPage.testSignUp("michael7", "olisa7", "aniks235", "0000");
+		Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("signup-success"))).getText().contains("Successful"));
+		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
 		//login
-		loginPage.getLoginLink().click();
-		loginPage.testLogin("issa123", "0000");
+//		loginPage.testLogin("issa123", "0000");
+//		Assertions.assertEquals("Dashboard", driver.getTitle());
+	}
+
+
+
+
+	@Test
+	@Order(3)
+	public void testLogin() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23", "0000");
+		Thread.sleep(1000);
 		Assertions.assertEquals("Dashboard", driver.getTitle());
 	}
 
 	@Test
-	@Order(3)
+	@Order(4)
 	public void unAuthorizedUser()  {
 		driver.get("http://localhost:" + port + "/dashboard");
 		Assertions.assertEquals("Login", driver.getTitle());
@@ -81,12 +107,12 @@ private WebDriverWait wait;
 		Assertions.assertEquals("Sign Up", driver.getTitle());
 	}
 
-	@Test
-	@Order(4)
+	@Test // Test Create New Note
+	@Order(5)
 	public void testNote() throws InterruptedException {
 		// login
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("issa123", "0000");
+		loginPage.testLogin("aniks23", "0000");
 
 		// Switch to notes tab
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
@@ -100,28 +126,112 @@ private WebDriverWait wait;
 		Assertions.assertEquals("Success", text2);
 	}
 
-	@Test
-	@Order(5)
+	@Test // test Note Edit
+	@Order(6)
 	public void testNoteEdit() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("issa123", "0000");
+		loginPage.testLogin("aniks23", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
 		var result = notesPage.testEditNote("holiday idea", "going for fishing", 1);
 
 
 	}
 
-	@Test
-	@Order(6)
+	@Test  // Test Note Delete
+	@Order(7)
 	public void testNoteDelete() throws InterruptedException {
 		testNote();
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("issa123", "0000");
+		loginPage.testLogin("aniks23", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
 		notesPage.testDeleteNote(0);
 
 	}
+
+	@Test // Test Create New Credential
+	@Order(8)
+	public void testCredential() throws InterruptedException {
+		// login
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23", "0000");
+
+		// Switch to notes tab
+		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
+		// Create a new note
+		String text = credentialsPage.testCreateNewcred("liverpool.com","olisa123", "5657");
+		Assertions.assertEquals("Success", text);
+		// navigate bck to dashboard
+		credentialsPage.getCredentialSaveSuccessBackToHome().click();
+		//go to notetab
+		String text2 = credentialsPage.testCreateNewcred("itunes","dilly", "1434");
+		Assertions.assertEquals("Success", text2);
+	}
+
+	@Test // Test Edit Credential
+	@Order(9)
+	public void testCredEdit() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23", "0000");
+		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
+		var result = credentialsPage.testEditCredential("stackoverflow", "Deamon", "7777",1);
+
+
+	}
+
+	@Test // Test Delete Credential
+	@Order(10)
+	public void testCredentialDelete() throws InterruptedException {
+		testCredential();
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23", "0000");
+		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
+		credentialsPage.testDeleteCredential(0);
+
+	}
+
+
+	@Test
+	@Order(12)
+	public void testBadUrl() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23","0000");
+
+
+		// Try to access a random made-up URL.
+		driver.get("http://localhost:" + port + "/some-random-page");
+		Assertions.assertTrue(driver.getPageSource().contains("Whitelabel Error Page"));
+	}
+
+	@Test
+	@Order(13)
+	public void testLargeUpload() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/login");
+		loginPage.testLogin("aniks23","0000");
+		//loginPage.testLogin("aniks23","0000");
+		wait.until(ExpectedConditions.elementToBeClickable(filePage.getFilesTab())).click();
+		// Try to upload an arbitrary large file
+
+		String fileName = "OReilly.JavaScript.pdf";
+
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
+		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
+		fileSelectButton.sendKeys(new File(fileName).getAbsolutePath());
+
+		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
+		uploadButton.click();
+		try {
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.id("success")));
+		} catch (org.openqa.selenium.TimeoutException e) {
+			System.out.println("Large File upload failed");
+		}
+		Assertions.assertTrue(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
+
+	}
+
+
 }
+
+//**********************************************************************************************************
 
 //	/**
 //	 * PLEASE DO NOT DELETE THIS method.

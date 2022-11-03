@@ -99,6 +99,7 @@ public String LoginErrorPage(Model model, LoginDto login) {
 
     @PostMapping("/signup")
     public String postSignupPage(Model model, IUser user,
+                                 RedirectAttributes ra,
                                  @RequestParam String username,
                                  @RequestParam String firstname,
                                  @RequestParam String lastname ,
@@ -112,9 +113,9 @@ public String LoginErrorPage(Model model, LoginDto login) {
         var hashedPassword = hashService.getHashedValue(password,encodedSalt);
        Long id = iUserService.saveUser(new IUser(username,firstname,lastname,hashedPassword,encodedSalt));
 
-model.addAttribute("message", "signup successful");
-model.addAttribute("Users",user);
-        return "/result";
+        ra.addFlashAttribute("message", "signup successful");
+        ra.addFlashAttribute("Users",user);
+        return "redirect:login";
     }
 
     @GetMapping("/signup")
