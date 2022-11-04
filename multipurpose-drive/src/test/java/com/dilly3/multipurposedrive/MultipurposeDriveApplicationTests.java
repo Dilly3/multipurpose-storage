@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
-import java.util.List;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -79,9 +78,7 @@ private WebDriverWait wait;
 		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("signup-success"))).getText().contains("Successful"));
 		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
-		//login
-//		loginPage.testLogin("issa123", "0000");
-//		Assertions.assertEquals("Dashboard", driver.getTitle());
+
 	}
 
 
@@ -195,8 +192,6 @@ private WebDriverWait wait;
 	public void testBadUrl() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
 		loginPage.testLogin("aniks23","0000");
-
-
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + port + "/some-random-page");
 		Assertions.assertTrue(driver.getPageSource().contains("Whitelabel Error Page"));
@@ -207,10 +202,8 @@ private WebDriverWait wait;
 	public void testLargeUpload() throws InterruptedException {
 		driver.get("http://localhost:" + port + "/login");
 		loginPage.testLogin("aniks23","0000");
-		//loginPage.testLogin("aniks23","0000");
 		wait.until(ExpectedConditions.elementToBeClickable(filePage.getFilesTab())).click();
 		// Try to upload an arbitrary large file
-
 		String fileName = "OReilly.JavaScript.pdf";
 
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
