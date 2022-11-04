@@ -60,15 +60,6 @@ private WebDriverWait wait;
 		driver.get("http://localhost:" + port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
-	public void testSignUp1(String firstname, String lastname, String username, String password) throws InterruptedException {
-// sign up
-		driver.get("http://localhost:" + port + "/signup");
-		signupPage.testSignUp(firstname, lastname, username, password);
-		//Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("signup-success"))).getText().contains("Successful"));
-		//login
-//		loginPage.testLogin("issa123", "0000");
-//		Assertions.assertEquals("Dashboard", driver.getTitle());
-	}
 
 	@Test
 	@Order(2)
@@ -87,8 +78,9 @@ private WebDriverWait wait;
 	@Test
 	@Order(3)
 	public void testLogin() throws InterruptedException {
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 		Thread.sleep(1000);
 		Assertions.assertEquals("Dashboard", driver.getTitle());
 	}
@@ -108,8 +100,10 @@ private WebDriverWait wait;
 	@Order(5)
 	public void testNote() throws InterruptedException {
 		// login
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 
 		// Switch to notes tab
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
@@ -126,8 +120,10 @@ private WebDriverWait wait;
 	@Test // test Note Edit
 	@Order(6)
 	public void testNoteEdit() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
 		var result = notesPage.testEditNote("holiday idea", "going for fishing", 1);
 
@@ -139,7 +135,7 @@ private WebDriverWait wait;
 	public void testNoteDelete() throws InterruptedException {
 		testNote();
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(notesPage.getNotesTab())).click();
 		notesPage.testDeleteNote(0);
 
@@ -148,9 +144,11 @@ private WebDriverWait wait;
 	@Test // Test Create New Credential
 	@Order(8)
 	public void testCredential() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		// login
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 
 		// Switch to notes tab
 		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
@@ -167,8 +165,9 @@ private WebDriverWait wait;
 	@Test // Test Edit Credential
 	@Order(9)
 	public void testCredEdit() throws InterruptedException {
+		testCredential();
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
 		var result = credentialsPage.testEditCredential("stackoverflow", "Deamon", "7777",1);
 
@@ -180,7 +179,7 @@ private WebDriverWait wait;
 	public void testCredentialDelete() throws InterruptedException {
 		testCredential();
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23", "0000");
+		loginPage.testLogin("aniks9", "0000");
 		wait.until(ExpectedConditions.elementToBeClickable(credentialsPage.getCredentialTab())).click();
 		credentialsPage.testDeleteCredential(0);
 
@@ -190,8 +189,10 @@ private WebDriverWait wait;
 	@Test
 	@Order(12)
 	public void testBadUrl() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23","0000");
+		loginPage.testLogin("aniks9","0000");
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + port + "/some-random-page");
 		Assertions.assertTrue(driver.getPageSource().contains("Whitelabel Error Page"));
@@ -200,11 +201,13 @@ private WebDriverWait wait;
 	@Test
 	@Order(13)
 	public void testLargeUpload() throws InterruptedException {
+		driver.get("http://localhost:" + port + "/signup");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		driver.get("http://localhost:" + port + "/login");
-		loginPage.testLogin("aniks23","0000");
+		loginPage.testLogin("aniks9","0000");
 		wait.until(ExpectedConditions.elementToBeClickable(filePage.getFilesTab())).click();
 		// Try to upload an arbitrary large file
-		String fileName = "OReilly.JavaScript.pdf";
+		String fileName = "WHAT’S YOUR BIGGEST WEAKNESS.mp4";
 
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fileUpload")));
 		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
