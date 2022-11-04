@@ -43,19 +43,21 @@ public class FileController {
                 String username = SecurityContextHolder.getContext().getAuthentication().getName();
                 var user = iUserService.getUserByUsername(username);
            var message = filesService.uploadFile(multipartFile,user.getUserId());
-                ra.addFlashAttribute("message", message);
+                model.addAttribute("message", message);
                 return "result";
-            }
-            model.addAttribute("message", "empty file");
+            }else {
+            ra.addFlashAttribute("message", "empty file");
             return "redirect:/dashboard";
+        }
+
         }
 
     @GetMapping("/delete")
     public String deletedoc(@RequestParam("id") int Id, Model model,RedirectAttributes ra){
       String message =  filesService.deleteDoc(Id);
-        ra.addFlashAttribute("message", message);
+        model.addAttribute("message", message);
 
-        return "redirect:/dashboard";
+        return "result";
     }
 
     @GetMapping("/download")

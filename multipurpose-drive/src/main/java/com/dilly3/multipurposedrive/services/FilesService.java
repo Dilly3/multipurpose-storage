@@ -42,7 +42,7 @@ import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
 
             var Id = saveFile(newFile);
             LOGGER.info(String.format(LOG_INFO, "File saved"));
-            message = "save successful";
+            message = "upload successful";
 
         } catch (IOException e) {
             LOGGER.error(String.format(LOG_ERROR, e.getMessage()));
@@ -53,18 +53,20 @@ import static com.dilly3.multipurposedrive.services.ColorConstants.LOG_INFO;
     }
 
     public String deleteDoc(int fileId){
-        String message;
+        String message = "";
+        Files file;
         String filename;
         try{
+
+           file =  getFileById(fileId);
+           filename = file.getFilename();
             deleteFile(fileId);
-           filename =  getFileById(fileId).getFilename();
 
             message = "delete successful";
             LOGGER.info(String.format(LOG_INFO, filename  + " deleted successfully"));
 
         }catch (Exception e){
             LOGGER.error(String.format(LOG_ERROR, e.getMessage()));
-            message = e.getMessage();
         }
 
        return message;

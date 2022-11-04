@@ -76,7 +76,7 @@ private WebDriverWait wait;
 	public void testSignUpAndRedirection() throws InterruptedException {
 // sign up
 		driver.get("http://localhost:" + port + "/signup");
-		signupPage.testSignUp("michael7", "olisa7", "aniks235", "0000");
+		signupPage.testSignUp("michael9", "olisa9", "aniks9", "0000");
 		Assertions.assertTrue(wait.until(driver -> driver.findElement(By.id("signup-success"))).getText().contains("Successful"));
 		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
 		//login

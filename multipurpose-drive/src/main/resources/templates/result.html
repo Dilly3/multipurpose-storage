@@ -20,6 +20,11 @@
     <span >Your changes were updated successfully<a  id="updateLink" th:href="@{/dashboard}" > Click here</a> to continue.</span>
   </div>
 
+  <div class="alert alert-success fill-parent" th:if="${message == 'upload successful'}">
+    <h1 class="display-5" id="successUpload">Success</h1>
+    <span >File Upload Successful<a  id="uploadLink" th:href="@{/dashboard}" > Click here</a> to continue.</span>
+  </div>
+
   <div class="alert alert-success fill-parent" th:if="${message == 'delete successful'}">
     <h1 class="display-5" id="successDelete">Success</h1>
     <span>deleted successfully . Click <a th:href="@{/dashboard}" id="deleteLink">here</a> to continue.</span>
